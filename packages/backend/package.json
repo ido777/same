@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsc",
     "pretest": "npm run build",
-    "test": "node --test ./test/osmService.test.js"
+    "test": "node --test ./test/*.js",
+    "cli": "npm run build && node dist/cli.js",
+    "start": "npm run build && node dist/server.js"
   },
   "dependencies": {},
   "devDependencies": {
