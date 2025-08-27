@@ -12,7 +12,8 @@
  */
 
 import http from 'node:http';
-import { parse as parseUrl } from 'node:url';
+import { parse as parseUrl, fileURLToPath } from 'node:url';
+import process from 'node:process';
 import { geocode, getSameLocationAddresses, getNearbyAddresses } from './osmService';
 
 function sendJson(res: http.ServerResponse, status: number, data: unknown) {
@@ -25,7 +26,7 @@ function sendJson(res: http.ServerResponse, status: number, data: unknown) {
   res.end(JSON.stringify(data));
 }
 
-const server = http.createServer(async (req, res) => {
+const server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
   const parsed = parseUrl(req.url || '', true);
   const { pathname, query } = parsed;
   try {
@@ -60,7 +61,10 @@ const server = http.createServer(async (req, res) => {
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
-if (require.main === module) {
+// Determine if this module is being run directly.  In an ES module
+// environment, require is undefined, so use the script path.
+const __filename = fileURLToPath(import.meta.url);
+if (process.argv[1] && process.argv[1] === __filename) {
   server.listen(PORT, () => {
     console.log(`API server listening on port ${PORT}`);
   });

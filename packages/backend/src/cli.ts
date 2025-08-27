@@ -11,6 +11,8 @@
 
 import readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
+import { fileURLToPath } from 'node:url';
+import process from 'node:process';
 import { geocode, getSameLocationAddresses, getNearbyAddresses } from './osmService';
 
 async function main() {
@@ -53,8 +55,13 @@ async function main() {
   }
 }
 
-if (require.main === module) {
-  // Run the CLI only when invoked directly.
+// In an ES module environment, require is not defined.  To determine
+// whether this file is being executed directly (as a CLI) rather than
+// imported as a module, compare the invoked script path to the current
+// module URL.  When run via `node dist/cli.js`, process.argv[1] will
+// equal the file URL converted to a filesystem path.
+const __filename = fileURLToPath(import.meta.url);
+if (process.argv[1] && process.argv[1] === __filename) {
   main().catch(err => {
     console.error(err);
     process.exit(1);
