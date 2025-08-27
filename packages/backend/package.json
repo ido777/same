@@ -1,0 +1,16 @@
+{
+  "name": "same-backend",
+  "version": "0.1.0",
+  "description": "Backend utilities for the same-location and nearby address service",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "pretest": "npm run build",
+    "test": "node --test ./test/osmService.test.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  }
+}
