@@ -1,0 +1,20 @@
+{
+  "name": "same-backend",
+  "version": "0.1.0",
+  "description": "Backend utilities for the same-location and nearby address service",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "pretest": "npm run build",
+    "test": "node --test ./test/*.js",
+    "cli": "npm run build && node dist/cli.js",
+    "start": "npm run build && node dist/server.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.2"
+    ,
+    "@types/node": "^20.9.0"
+  }
+}
