@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES2019",
-    "module": "ES2020",
+    // Use NodeNext module system so that relative imports require explicit
+    // file extensions and Node's ESM resolution is used.  This must be
+    // paired with moduleResolution: nodenext.
+    "module": "NodeNext",
     "outDir": "dist",
     "rootDir": "src",
     "moduleResolution": "nodenext",
