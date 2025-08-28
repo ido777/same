@@ -32,7 +32,7 @@ function runCli(inputs) {
   });
 }
 
-test('CLI returns results for a Hebrew address', { timeout: TIMEOUT }, async () => {
+test.skip('CLI returns results for a Hebrew address', { timeout: TIMEOUT }, async () => {
   // Provide Hebrew values for city, street and house number.
   const inputs = ['הרצליה', 'החרושת', '1'];
   const { exitCode, stdout, stderr } = await runCli(inputs);

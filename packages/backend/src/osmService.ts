@@ -55,7 +55,7 @@ export async function geocode(address: string): Promise<{ lat: number; lon: numb
  * @param radius Search radius in metres (default 50).
  * @returns A Promise resolving to an array of Address objects.
  */
-export async function getNearbyAddresses(lat: number, lon: number, radius = 50): Promise<Address[]> {
+export async function getNearbyAddresses(lat: number, lon: number, radius = 50, retries = 2): Promise<Address[]> {
   const url = 'https://overpass-api.de/api/interpreter';
   // Build the Overpass query.  We search for nodes and ways with
   // addr:housenumber within the given radius.  The 'out center' clause
@@ -78,6 +78,16 @@ export async function getNearbyAddresses(lat: number, lon: number, radius = 50):
       'User-Agent': 'same-osm-app/0.1'
     }
   });
+  // Handle rate limiting: if Overpass returns HTTP 429 (Too Many Requests),
+  // wait briefly and retry up to `retries` times.  This prevents transient
+  // failures in the test suite when multiple requests are made in quick
+  // succession.
+  if (response.status === 429 && retries > 0) {
+    // Wait 1 second before retrying.  In a real application you might
+    // implement exponential backoff or respect Retry-After headers.
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return getNearbyAddresses(lat, lon, radius, retries - 1);
+  }
   if (!response.ok) {
     throw new Error(`Overpass query failed: HTTP ${response.status}`);
   }
@@ -111,8 +121,10 @@ export async function getNearbyAddresses(lat: number, lon: number, radius = 50):
  */
 export async function getSameLocationAddresses(address: string): Promise<Address[]> {
   const { lat, lon } = await geocode(address);
-  // Use a smaller radius for same‑location addresses (e.g. 30m).
-  return await getNearbyAddresses(lat, lon, 30);
+  // Use a modest radius for same‑location addresses.  A radius that is too
+  // small may miss valid nearby points (especially in dense cities), so we
+  // default to 50 m instead of 30 m.
+  return await getNearbyAddresses(lat, lon, 50);
 }
 
 // index.ts re‑exports these functions so that consumers can import

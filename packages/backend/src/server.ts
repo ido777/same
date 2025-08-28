@@ -14,7 +14,9 @@
 import http from 'node:http';
 import { parse as parseUrl, fileURLToPath } from 'node:url';
 import process from 'node:process';
-import { geocode, getSameLocationAddresses, getNearbyAddresses } from './osmService';
+// Import service functions with explicit `.js` extension as required
+// by the NodeNext module system.
+import { geocode, getSameLocationAddresses, getNearbyAddresses } from './osmService.js';
 
 function sendJson(res: http.ServerResponse, status: number, data: unknown) {
   // Always allow cross-origin requests so that the frontend (served
